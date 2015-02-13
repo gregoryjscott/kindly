@@ -7,19 +7,6 @@ module Kindly
 
     attr_reader :filename
 
-    def self.source
-      ''
-    end
-
-    def self.find_pending
-      migrations = []
-      filenames =  Dir[File.join(source, 'pending', '*.json')]
-      filenames.each do |filename|
-        migrations << Migration.new(filename)
-      end
-      migrations
-    end
-
     def initialize(filename)
       @filename = filename
     end
@@ -30,7 +17,7 @@ module Kindly
     end
 
     def move(destination)
-      path = File.join(self.class.source, destination)
+      path = File.join(Kindly.source, destination)
       FileUtils.mkdir(path) unless Dir.exist?(path)
       FileUtils.mv(@filename, path)
       @filename = File.join(path, File.basename(@filename))

@@ -8,7 +8,7 @@ describe 'Migration' do
   let(:migration) { migration = Kindly::Migration.new(filename) }
 
   before(:each) do
-    Kindly::Migration.stubs(:source).returns(File.join('test', 'fixtures'))
+    Kindly.stubs(:source).returns(File.join('test', 'fixtures'))
   end
 
   describe 'should log' do
