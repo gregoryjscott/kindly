@@ -13,7 +13,7 @@ module Kindly
     end
 
     def self.find(name)
-      if handler_not_registered(name)
+      if not_registered(name)
         raise "No handler registered with name #{name.to_sym}."
       end
 
@@ -22,7 +22,7 @@ module Kindly
 
     private
 
-    def self.handler_not_registered(name)
+    def self.not_registered(name)
       !@@handlers.has_key?(name)
     end
   end
