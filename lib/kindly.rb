@@ -1,5 +1,5 @@
 require 'kindly/migration'
-require 'kindly/handler'
+require 'kindly/runner'
 require 'kindly/version'
 
 module Kindly
@@ -17,14 +17,14 @@ module Kindly
     migrations
   end
 
-  def self.handler
-    @handler ||= Handler.new
+  def self.runner
+    @runner ||= runner.new
   end
 
   def self.run
     migrations = find_migrations
     unless migrations.empty?
-      migrations.each { |migration| handler.run(migration) }
+      migrations.each { |migration| runner.run(migration) }
     end
   end
 

@@ -1,7 +1,7 @@
 require 'kindly'
 
 module Kindly
-  class Handler
+  class Runner
 
     def run(migration)
       migration.running!
