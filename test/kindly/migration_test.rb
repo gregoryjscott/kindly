@@ -11,7 +11,7 @@ describe 'Migration' do
     Kindly.stubs(:source).returns(File.join('test', 'fixtures'))
   end
 
-  describe 'should log' do
+  describe 'logs' do
 
     before(:each) { migration.stubs(:move) }
 
@@ -53,7 +53,7 @@ describe 'Migration' do
 
   end
 
-  describe 'should move files' do
+  describe 'moves files' do
 
     let(:source) { File.join('test', 'fixtures') }
     let(:tmp_dir) { File.join(source, 'tmp') }
