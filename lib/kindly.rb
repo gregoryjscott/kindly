@@ -1,5 +1,7 @@
 require 'kindly/migration'
 require 'kindly/runner'
+require 'kindly/handlers'
+require 'kindly/handlers/default'
 require 'kindly/version'
 
 module Kindly
@@ -8,24 +10,26 @@ module Kindly
     'migrations'
   end
 
-  def self.find_migrations
-    migrations = []
-    filenames =  Dir[File.join(source, 'pending', '*.json')]
-    filenames.each do |filename|
-      migrations << Migration.new(filename)
-    end
-    migrations
-  end
-
-  def self.runner
-    @runner ||= runner.new
-  end
-
-  def self.run
-    migrations = find_migrations
+  def self.run(handler_name = :default)
+    handler = Handlers.find(handler_name)
+    runner = Runner.new(handler)
+    migrations = find_migrations(handler.ext)
     unless migrations.empty?
       migrations.each { |migration| runner.run(migration) }
     end
+  end
+
+  private
+
+  def self.find_migrations(ext)
+    filenames =  Dir[File.join(source, 'pending', "*.#{ext}")]
+    build_migrations(filename)
+  end
+
+  def self.build_migrations(filenames)
+    migrations = []
+    filenames.each { |filename| migrations << Migration.new(filename) }
+    migrations
   end
 
 end

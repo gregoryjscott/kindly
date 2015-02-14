@@ -6,7 +6,7 @@ describe 'Runner' do
 
   let(:filename) { File.join('test', 'fixtures', 'pending', 'one.json') }
   let(:migration) { migration = Kindly::Migration.new(filename) }
-  let(:runner) { Kindly::Runner.new }
+  let(:runner) { Kindly::Runner.new(Kindly::Handlers::Default.new) }
 
   before(:each) do
     migration.stubs(:move)

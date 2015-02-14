@@ -3,10 +3,14 @@ require 'kindly'
 module Kindly
   class Runner
 
+    def initialize(handler)
+      @handler = handler
+    end
+
     def run(migration)
       migration.running!
       begin
-        # do something
+        @handler.run(migration)
 
         migration.completed!
       rescue

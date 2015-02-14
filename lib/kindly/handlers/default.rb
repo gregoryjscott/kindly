@@ -5,15 +5,15 @@ module Kindly
     class Default
 
       def ext
-        '.*'
+        '*'
       end
 
       def run(migration)
-        puts "No migration handlers for #{migration.filename} were found."
+        puts "The default handler for #{migration.filename} does nothing."
       end
 
     end
 
-    register :do_nothing, Default.new
+    register :default, Default.new
   end
 end
