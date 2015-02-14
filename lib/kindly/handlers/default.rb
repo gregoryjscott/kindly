@@ -14,6 +14,6 @@ module Kindly
 
     end
 
-    register :default, Default.new
+    register(:default, Default.new)
   end
 end

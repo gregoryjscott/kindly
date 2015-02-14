@@ -10,7 +10,7 @@ module Kindly
     'migrations'
   end
 
-  def self.run(handler_name = :default)
+  def self.run(handler_name)
     handler = Handlers.find(handler_name)
     runner = Runner.new(handler)
     migrations = find_migrations(handler.ext)
@@ -22,8 +22,8 @@ module Kindly
   private
 
   def self.find_migrations(ext)
-    filenames =  Dir[File.join(source, 'pending', "*.#{ext}")]
-    build_migrations(filename)
+    filenames = Dir[File.join(source, 'pending', "*.#{ext}")]
+    build_migrations(filenames)
   end
 
   def self.build_migrations(filenames)
