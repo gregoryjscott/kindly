@@ -1,7 +1,7 @@
 require 'kindly/migration'
 require 'kindly/runner'
 require 'kindly/handlers'
-require 'kindly/handlers/default'
+require 'kindly/handlers/do_nothing'
 require 'kindly/version'
 
 module Kindly

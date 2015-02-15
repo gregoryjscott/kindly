@@ -2,18 +2,18 @@ require 'kindly'
 
 module Kindly
   module Handlers
-    class Default
+    class DoNothing
 
       def ext
         '*'
       end
 
       def run(migration)
-        puts "The default handler for #{migration.filename} does nothing."
+        puts "The handler for #{migration.filename} did nothing."
       end
 
     end
 
-    register(:default, Default.new)
+    register(:do_nothing, DoNothing.new)
   end
 end

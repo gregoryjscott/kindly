@@ -4,7 +4,7 @@ require 'minitest/autorun'
 describe 'Kindly::Handlers' do
 
   let(:handlers) { Kindly::Handlers }
-  let(:handler) { Kindly::Handlers::Default.new }
+  let(:handler) { Kindly::Handlers::DoNothing.new }
 
   it 'throws if handler is not registered' do
     assert_raises(RuntimeError) { handlers.find(:missing) }
