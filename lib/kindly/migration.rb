@@ -11,11 +11,6 @@ module Kindly
       @filename = filename
     end
 
-    def load
-      puts "#{@filename} loading."
-      File.open(@filename) { |file| JSON.load(file) }
-    end
-
     def move(destination)
       path = File.join(Kindly.source, destination)
       FileUtils.mkdir(path) unless Dir.exist?(path)

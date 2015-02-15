@@ -15,11 +15,6 @@ describe 'Migration' do
 
     before(:each) { migration.stubs(:move) }
 
-    it 'when loading' do
-      output = capture_output { migration.load }
-      assert loading?(output)
-    end
-
     it 'when running' do
       output = capture_output { migration.running! }
       assert running?(output)
@@ -33,10 +28,6 @@ describe 'Migration' do
     it 'when failed' do
       output = capture_output { migration.failed! }
       assert failed?(output)
-    end
-
-    def loading?(output)
-      output.include?("#{filename} loading")
     end
 
     def running?(output)
