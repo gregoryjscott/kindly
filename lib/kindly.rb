@@ -8,7 +8,7 @@ module Kindly
 
   def self.run(handler_name, source = '_migrations')
     @@source = source
-    puts "Kindly #{handler_name} in #{source} directory."
+    puts "Kindly run #{handler_name} in #{source} directory."
 
     handler = Handlers.find(handler_name)
     runner = Runner.new(handler)
