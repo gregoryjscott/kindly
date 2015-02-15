@@ -23,7 +23,7 @@ module Kindly
     private
 
     def self.not_registered(name)
-      !@@handlers.has_key?(name)
+      !@@handlers.has_key?(name.to_sym)
     end
   end
 end
