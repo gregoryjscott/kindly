@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+$:.unshift File.join(File.dirname(__FILE__), *%w{ .. lib })
+
+require 'kindly'
+require 'mercenary'
+
+Mercenary.program(:kindly) do |p|
+  p.version Kindly::VERSION
+  p.description 'Kindly run migrations of any kind.'
+  p.syntax 'kindly <handler>'
+  p.action do |args, options|
+    if args.empty?
+      puts p
+    else
+      Kindly.run(args.first.to_sym)
+    end
+  end
+end

@@ -14,9 +14,8 @@ module Kindly
     handler = Handlers.find(handler_name)
     runner = Runner.new(handler)
     migrations = find_migrations(handler.ext)
-    unless migrations.empty?
-      migrations.each { |migration| runner.run(migration) }
-    end
+    puts "No migrations found for #{handler_name} handler." if migrations.empty?
+    migrations.each { |migration| runner.run(migration) }
   end
 
   private
