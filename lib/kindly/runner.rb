@@ -8,14 +8,35 @@ module Kindly
     end
 
     def run(migration)
-      migration.running!
-      begin
-        @handler.run(migration)
-
-        migration.completed!
-      rescue
-        migration.failed!
+      output = capture_output do
+        begin
+          migration.running!
+          @handler.run(migration)
+          migration.completed!
+        rescue
+          migration.failed!
+        end
       end
+
+      write_log_file(migration, output)
+    end
+
+    private
+
+    def capture_output
+      begin
+        old_stdout = $stdout
+        $stdout = StringIO.new('', 'w')
+        yield
+        $stdout.string
+      ensure
+        $stdout = old_stdout
+      end
+    end
+
+    def write_log_file(migration, output)
+      filename = "#{migration.filename}.log"
+      File.open(filename, 'w') { |file| file.write(output) }
     end
 
   end
