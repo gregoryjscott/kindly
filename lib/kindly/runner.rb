@@ -13,7 +13,8 @@ module Kindly
           migration.running!
           @handler.run(migration)
           migration.completed!
-        rescue
+        rescue Exception
+          puts $!, $@
           migration.failed!
         end
       end
