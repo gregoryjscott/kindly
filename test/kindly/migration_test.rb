@@ -3,16 +3,24 @@ require 'minitest/autorun'
 require 'mocha/mini_test'
 
 describe 'Migration' do
-
-  let(:filename) { File.join('test', 'fixtures', 'pending', 'one.json') }
+  let(:source) { File.join('test', 'fixtures') }
+  let(:config) {
+    {
+      :source => source,
+      :pending => File.join(source, 'pending'),
+      :running => File.join(source, 'running'),
+      :completed => File.join(source, 'completed'),
+      :failed => File.join(source, 'failed')
+    }
+  }
+  let(:filename) { File.join(config[:pending], 'one.json') }
   let(:migration) { migration = Kindly::Migration.new(filename) }
 
   before(:each) do
-    Kindly.stubs(:source).returns(File.join('test', 'fixtures'))
+    Kindly.stubs(:config).returns(config)
   end
 
   describe 'logs' do
-
     before(:each) { migration.stubs(:move) }
 
     it 'when running' do
@@ -46,7 +54,6 @@ describe 'Migration' do
 
   describe 'moves files' do
 
-    let(:source) { File.join('test', 'fixtures') }
     let(:tmp_dir) { File.join(source, 'tmp') }
 
     before(:each) do
@@ -58,33 +65,32 @@ describe 'Migration' do
 
     after(:each) do
       restore_pending
-      remove(File.join(source, 'running'))
-      remove(File.join(source, 'completed'))
-      remove(File.join(source, 'failed'))
+      remove(config[:running])
+      remove(config[:completed])
+      remove(config[:failed])
       remove(tmp_dir)
     end
 
     it 'when running' do
       capture_output { migration.running! }
-      assert File.exist?(File.join(source, 'running', File.basename(filename)))
+      assert File.exist?(File.join(config[:running], File.basename(filename)))
     end
 
     it 'when completed' do
       capture_output { migration.completed! }
-      assert File.exist?(File.join(source, 'completed', File.basename(filename)))
+      assert File.exist?(File.join(config[:completed], File.basename(filename)))
     end
 
     it 'when failed' do
       capture_output { migration.failed! }
-      assert File.exist?(File.join(source, 'failed', File.basename(filename)))
+      assert File.exist?(File.join(config[:failed], File.basename(filename)))
     end
 
     def restore_pending
-      pending_dir = File.join(source, 'pending')
-      FileUtils.rm_r(pending_dir)
-      FileUtils.mkdir(pending_dir)
+      FileUtils.rm_r(config[:pending])
+      FileUtils.mkdir(config[:pending])
       Dir[File.join(tmp_dir, '*.json')].each do |file|
-        FileUtils.cp(file, pending_dir)
+        FileUtils.cp(file, config[:pending])
       end
     end
 

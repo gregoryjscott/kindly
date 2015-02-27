@@ -4,6 +4,7 @@ require 'mocha/mini_test'
 
 describe 'Kindly' do
   let(:fixtures) { File.join('test', 'fixtures') }
+  let(:pending) { File.join(fixtures, 'pending') }
 
   it 'runs given handler name' do
     Kindly.stubs(:config).returns(:source => fixtures)
@@ -21,6 +22,19 @@ describe 'Kindly' do
     Kindly::Runner.any_instance.stubs(:run)
     capture_output { Kindly.run(:do_nothing, :source => fixtures) }
     assert Kindly.config[:source] == fixtures
+  end
+
+  it 'defaults pending to _migrations/pending' do
+    expected = File.join('_migrations', 'pending')
+    Kindly::Runner.any_instance.stubs(:run)
+    capture_output { Kindly.run(:do_nothing) }
+    assert Kindly.config[:pending] == expected
+  end
+
+  it 'allows pending to be overridden' do
+    Kindly::Runner.any_instance.stubs(:run)
+    capture_output { Kindly.run(:do_nothing, :pending => pending) }
+    assert_equal pending, Kindly.config[:pending]
   end
 
   def capture_output
