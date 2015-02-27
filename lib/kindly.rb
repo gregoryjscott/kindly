@@ -6,9 +6,14 @@ require 'kindly/version'
 
 module Kindly
 
-  def self.run(handler_name, source = '_migrations')
-    @@source = source
-    puts "Kindly run #{handler_name} in #{source} directory."
+  DEFAULTS = {
+    :source => '_migrations'
+  }
+
+  def self.run(handler_name, options = DEFAULTS)
+    options = DEFAULTS.merge(options)
+    @@config = options
+    puts "Kindly run #{handler_name} in #{@@config[:source]} directory."
 
     handler = Handlers.find(handler_name)
     runner = Runner.new(handler)
@@ -18,14 +23,14 @@ module Kindly
     migrations.each { |migration| runner.run(migration) }
   end
 
-  def self.source
-    @@source
+  def self.config
+    @@config
   end
 
   private
 
   def self.find_migrations(ext)
-    filenames = Dir[File.join(source, 'pending', "*.#{ext}")]
+    filenames = Dir[File.join(config[:source], 'pending', "*.#{ext}")]
     build_migrations(filenames)
   end
 
