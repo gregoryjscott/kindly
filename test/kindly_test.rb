@@ -3,9 +3,11 @@ require 'minitest/autorun'
 require 'mocha/mini_test'
 
 describe 'Kindly' do
+  let(:fixtures) { File.join('test', 'fixtures') }
+  let(:pending) { File.join(fixtures, 'pending') }
 
   it 'runs given handler name' do
-    Kindly.stubs(:source).returns(File.join('test', 'fixtures'))
+    Kindly.stubs(:config).returns(:source => fixtures)
     Kindly::Runner.any_instance.expects(:run).twice
     capture_output { Kindly.run(:do_nothing) }
   end
@@ -13,14 +15,26 @@ describe 'Kindly' do
   it 'defaults source to _migrations' do
     Kindly::Runner.any_instance.stubs(:run)
     capture_output { Kindly.run(:do_nothing) }
-    assert Kindly.source == '_migrations'
+    assert Kindly.config[:source] == '_migrations'
   end
 
   it 'allows source to be overridden' do
     Kindly::Runner.any_instance.stubs(:run)
-    fixtures = File.join('test', 'fixtures')
-    capture_output { Kindly.run(:do_nothing, fixtures) }
-    assert Kindly.source == fixtures
+    capture_output { Kindly.run(:do_nothing, :source => fixtures) }
+    assert Kindly.config[:source] == fixtures
+  end
+
+  it 'defaults pending to _migrations/pending' do
+    expected = File.join('_migrations', 'pending')
+    Kindly::Runner.any_instance.stubs(:run)
+    capture_output { Kindly.run(:do_nothing) }
+    assert Kindly.config[:pending] == expected
+  end
+
+  it 'allows pending to be overridden' do
+    Kindly::Runner.any_instance.stubs(:run)
+    capture_output { Kindly.run(:do_nothing, :pending => pending) }
+    assert_equal pending, Kindly.config[:pending]
   end
 
   def capture_output
