@@ -20,7 +20,7 @@ module Kindly
 
     handler = Handlers.find(handler_name)
     runner = Runner.new(handler)
-    migrations = find_migrations(handler.ext)
+    migrations = find_migrations(handler.glob)
 
     puts "No migrations found for #{handler_name} handler." if migrations.empty?
     migrations.each { |migration| runner.run(migration) }
@@ -40,8 +40,8 @@ module Kindly
     File.join(config[:source], sub_dir)
   end
 
-  def self.find_migrations(ext)
-    filenames = Dir[File.join(config[:pending], "*.#{ext}")]
+  def self.find_migrations(glob)
+    filenames = Dir[File.join(config[:pending], glob)]
     build_migrations(filenames)
   end
 

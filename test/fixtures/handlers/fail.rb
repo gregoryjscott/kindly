@@ -4,7 +4,7 @@ module Fixtures
   module Handlers
     class Fail
 
-      def ext
+      def glob
         '*'
       end
 
