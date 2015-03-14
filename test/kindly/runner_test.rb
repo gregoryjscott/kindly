@@ -18,13 +18,7 @@ describe 'Runner' do
     FileUtils.rm(logfile) if File.exist?(logfile)
   end
 
-  it 'sets migration to running if loads succeeds' do
-    migration.expects(:running!).once
-    runner.run(migration)
-  end
-
-  it 'sets migration to loading even if load fails' do
-    migration.stubs(:load).raises
+  it 'sets migration to running' do
     migration.expects(:running!).once
     runner.run(migration)
   end
