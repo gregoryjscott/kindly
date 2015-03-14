@@ -3,7 +3,7 @@ require 'minitest/autorun'
 require 'mocha/mini_test'
 
 describe 'Migration' do
-  let(:source) { File.join('test', 'fixtures') }
+  let(:source) { File.join('test', 'fixtures', 'jobs', 'read_json') }
   let(:config) {
     {
       :source => source,

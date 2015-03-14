@@ -6,7 +6,8 @@ require 'fixtures/handlers/fail'
 
 describe 'Runner' do
 
-  let(:filename) { File.join('test', 'fixtures', 'pending', 'one.json') }
+  let(:read_json) { File.join('test', 'fixtures', 'jobs', 'read_json') }
+  let(:filename) { File.join(read_json, 'pending', 'one.json') }
   let(:migration) { migration = Kindly::Migration.new(filename) }
   let(:runner) { Kindly::Runner.new(Kindly::Handlers::DoNothing.new) }
   let(:runner_that_fails) { Kindly::Runner.new(Fixtures::Handlers::Fail.new) }
