@@ -2,12 +2,14 @@ require 'kindly'
 require 'minitest/autorun'
 require 'mocha/mini_test'
 require 'fileutils'
+require 'fixtures/handlers/fail'
 
 describe 'Runner' do
 
   let(:filename) { File.join('test', 'fixtures', 'pending', 'one.json') }
   let(:migration) { migration = Kindly::Migration.new(filename) }
   let(:runner) { Kindly::Runner.new(Kindly::Handlers::DoNothing.new) }
+  let(:runner_that_fails) { Kindly::Runner.new(Fixtures::Handlers::Fail.new) }
 
   before(:each) do
     migration.stubs(:move)
@@ -23,10 +25,16 @@ describe 'Runner' do
     runner.run(migration)
   end
 
-  it 'sets migration to completed if Runner succeeds' do
+  it 'sets migration to completed if migration succeeds' do
     migration.expects(:completed!).once
     migration.expects(:failed!).never
     runner.run(migration)
+  end
+
+  it 'sets migration to failed if migration fails' do
+    migration.expects(:completed!).never
+    migration.expects(:failed!).once
+    runner_that_fails.run(migration)
   end
 
   it 'writes log file' do
