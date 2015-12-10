@@ -4,7 +4,7 @@ module Kindly
   module Handlers
     class DoNothing
 
-      def ext
+      def glob
         '*'
       end
 

@@ -3,11 +3,11 @@ require 'minitest/autorun'
 require 'mocha/mini_test'
 
 describe 'Kindly' do
-  let(:fixtures) { File.join('test', 'fixtures') }
-  let(:pending) { File.join(fixtures, 'pending') }
+  let(:read_json) { File.join('test', 'fixtures', 'jobs', 'read_json') }
+  let(:pending) { File.join(read_json, 'pending') }
 
   it 'runs given handler name' do
-    Kindly.stubs(:config).returns(:source => fixtures)
+    Kindly.stubs(:config).returns(:source => read_json)
     Kindly::Runner.any_instance.expects(:run).twice
     capture_output { Kindly.run(:do_nothing) }
   end
@@ -20,8 +20,8 @@ describe 'Kindly' do
 
   it 'allows source to be overridden' do
     Kindly::Runner.any_instance.stubs(:run)
-    capture_output { Kindly.run(:do_nothing, :source => fixtures) }
-    assert Kindly.config[:source] == fixtures
+    capture_output { Kindly.run(:do_nothing, :source => read_json) }
+    assert Kindly.config[:source] == read_json
   end
 
   it 'defaults pending to _migrations/pending' do
