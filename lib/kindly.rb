@@ -10,7 +10,7 @@ module Kindly
     :source => '_migrations'
   }
 
-  def self.run(handler_name, options = DEFAULTS)
+  def self.run(handler_name, options = {})
     @@config = DEFAULTS.merge(options)
     default_sub_dir_if_missing(:pending)
     default_sub_dir_if_missing(:running)
