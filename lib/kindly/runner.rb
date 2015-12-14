@@ -13,7 +13,7 @@ module Kindly
       output = capture_output do
         migration.running!
         begin
-          @handler.run(migration.job)
+          @handler.run(migration.data)
         rescue
           failed = true
           puts $!, $@

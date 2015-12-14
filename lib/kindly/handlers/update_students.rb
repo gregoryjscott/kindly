@@ -4,8 +4,8 @@ module Kindly
   module Handlers
     class UpdateStudents
 
-      def run(job)
-        puts "The handler for job: #{job['JobId']} ran."
+      def run(data)
+        puts "The data is #{data}."
       end
 
     end

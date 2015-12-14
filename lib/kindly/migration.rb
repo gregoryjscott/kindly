@@ -5,12 +5,13 @@ require 'json'
 module Kindly
   class Migration
 
-    attr_reader :job
+    attr_reader :data
 
     def initialize(config, db, job_id)
       @config = config
       @db = db
-      @job = find_job(job_id)
+      @job = fetch_job(job_id)
+      @data = fetch_job_data(@job)
     end
 
     def running!
@@ -65,7 +66,7 @@ module Kindly
 
     private
 
-    def find_job(job_id)
+    def fetch_job(job_id)
       response = @db.scan({
         table_name: @config[:pending],
         select: 'ALL_ATTRIBUTES',
@@ -84,12 +85,39 @@ module Kindly
       response.items[0]
     end
 
+    def fetch_job_data(job)
+      response = @db.scan({
+        table_name: @config[:data],
+        select: 'ALL_ATTRIBUTES',
+        filter_expression: "JobDataId = :job_data_id",
+        expression_attribute_values: { ":job_data_id": job['JobDataId'] }
+      })
+
+      if response.items.length == 0
+        puts no_job_data
+        completed!
+        return
+      elsif response.items.length > 1
+        raise too_many_job_data
+      end
+
+      response.items[0]
+    end
+
     def no_jobs(job_id)
       "No pending jobs found for #{@job_id}."
     end
 
+    def no_job_data(job_id)
+      "No job data found for #{@job_id}."
+    end
+
     def too_many_jobs(job_id)
-      "Found to many pending jobs for #{@job_id}."
+      "Found too many pending job records for #{@job_id}."
+    end
+
+    def too_many_job_data(job_id)
+      "Found too many job data records for #{@job_id}."
     end
 
   end

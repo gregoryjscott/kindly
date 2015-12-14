@@ -9,6 +9,7 @@ require 'aws-sdk'
 module Kindly
 
   DEFAULTS = {
+    :data => 'job-data',
     :pending => 'job-pending',
     :running => 'job-running',
     :completed => 'job-completed',
