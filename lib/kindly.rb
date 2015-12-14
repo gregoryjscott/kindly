@@ -52,7 +52,6 @@ module Kindly
       queue_url: queue_url,
       receipt_handle: message.receipt_handle
     })
-    # puts "Processed message #{message.receipt_handle}."
   end
 
   def self.too_many_messages(handler_name)

@@ -10,7 +10,7 @@ module Kindly
 
     def run(migration)
       failed = false
-      output = capture_output do
+      log = capture_stdout do
         migration.running!
         begin
           @handler.run(migration.data)
@@ -21,15 +21,15 @@ module Kindly
       end
 
       if failed
-        migration.failed!(output)
+        migration.failed!(log)
       else
-        migration.completed!(output)
+        migration.completed!(log)
       end
     end
 
     private
 
-    def capture_output
+    def capture_stdout
       begin
         old_stdout = $stdout
         $stdout = StringIO.new('', 'w')
@@ -39,11 +39,6 @@ module Kindly
         $stdout = old_stdout
       end
     end
-
-    # def write_log_file(migration, output)
-    #   filename = "#{migration.filename}.log"
-    #   File.open(filename, 'w') { |file| file.write(output) }
-    # end
 
   end
 end
