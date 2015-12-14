@@ -9,18 +9,22 @@ module Kindly
     end
 
     def run(migration)
-      begin
-        output = capture_output do
-          migration.running!
+      failed = false
+      output = capture_output do
+        migration.running!
+        begin
           @handler.run(migration.job)
+        rescue
+          failed = true
+          puts $!, $@
         end
-        migration.completed!(output)
-      rescue Exception
-        puts $!, $@
-        migration.failed!(output)
       end
 
-      # write_log_file(migration, output)
+      if failed
+        migration.failed!(output)
+      else
+        migration.completed!(output)
+      end
     end
 
     private
