@@ -4,12 +4,8 @@ module Kindly
   module Handlers
     class DoNothing
 
-      def glob
-        '*'
-      end
-
-      def run(migration)
-        puts "The handler for #{migration.filename} did nothing."
+      def run(data)
+        puts "Nothing happened."
       end
 
     end
