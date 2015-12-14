@@ -3,7 +3,7 @@ require 'fileutils'
 require 'json'
 
 module Kindly
-  class Migration
+  class Job
 
     attr_reader :data
 

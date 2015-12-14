@@ -1,4 +1,4 @@
-require 'kindly/migration'
+require 'kindly/job'
 require 'kindly/runner'
 require 'kindly/handlers'
 require 'kindly/handlers/do_nothing'
@@ -28,9 +28,9 @@ module Kindly
     else
       db = Aws::DynamoDB::Client.new(region: 'us-west-2')
       job_id = message.message_attributes['JobId'].string_value
-      migration = Migration.new(config, db, job_id)
+      job = Job.new(config, db, job_id)
       handler = Handlers.find(handler_name)
-      Runner.new(db, handler).run(migration)
+      Runner.new(db, handler).run(job)
       delete_message(sqs, queue_url, message)
     end
   end

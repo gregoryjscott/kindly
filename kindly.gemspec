@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.version       = Kindly::VERSION
   spec.authors       = ['Greg Scott']
   spec.email         = ['i@gregoryjscott.com']
-  spec.summary       = %q{Kindly run migrations of any kind.}
+  spec.summary       = %q{Kindly run jobs of any kind.}
   spec.homepage      = 'https://github.com/gregoryjscott/kindly'
   spec.license       = 'MIT'
 

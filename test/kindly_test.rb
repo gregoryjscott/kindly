@@ -12,10 +12,10 @@ describe 'Kindly' do
   #   capture_output { Kindly.run(:do_nothing) }
   # end
   #
-  # it 'defaults source to _migrations' do
+  # it 'defaults source to _jobs' do
   #   Kindly::Runner.any_instance.stubs(:run)
   #   capture_output { Kindly.run(:do_nothing) }
-  #   assert Kindly.config[:source] == '_migrations'
+  #   assert Kindly.config[:source] == '_jobs'
   # end
   #
   # it 'allows source to be overridden' do
@@ -24,8 +24,8 @@ describe 'Kindly' do
   #   assert Kindly.config[:source] == read_json
   # end
   #
-  # it 'defaults pending to _migrations/pending' do
-  #   expected = File.join('_migrations', 'pending')
+  # it 'defaults pending to _jobs/pending' do
+  #   expected = File.join('_jobs', 'pending')
   #   Kindly::Runner.any_instance.stubs(:run)
   #   capture_output { Kindly.run(:do_nothing) }
   #   assert Kindly.config[:pending] == expected

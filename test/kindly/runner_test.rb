@@ -8,12 +8,12 @@ describe 'Runner' do
 
   let(:read_json) { File.join('test', 'fixtures', 'jobs', 'read_json') }
   let(:filename) { File.join(read_json, 'pending', 'one.json') }
-  let(:migration) { migration = Kindly::Migration.new(filename) }
+  let(:job) { job = Kindly::Job.new(filename) }
   let(:runner) { Kindly::Runner.new(Kindly::Handlers::DoNothing.new) }
   let(:runner_that_fails) { Kindly::Runner.new(Fixtures::Handlers::Fail.new) }
 
   before(:each) do
-    migration.stubs(:move)
+    job.stubs(:move)
   end
 
   after(:each) do
@@ -21,26 +21,26 @@ describe 'Runner' do
     FileUtils.rm(logfile) if File.exist?(logfile)
   end
 
-  it 'sets migration to running' do
-    migration.expects(:running!).once
-    runner.run(migration)
+  it 'sets job to running' do
+    job.expects(:running!).once
+    runner.run(job)
   end
 
-  it 'sets migration to completed if migration succeeds' do
-    migration.expects(:completed!).once
-    migration.expects(:failed!).never
-    runner.run(migration)
+  it 'sets job to completed if job succeeds' do
+    job.expects(:completed!).once
+    job.expects(:failed!).never
+    runner.run(job)
   end
 
-  it 'sets migration to failed if migration fails' do
-    migration.expects(:completed!).never
-    migration.expects(:failed!).once
-    runner_that_fails.run(migration)
+  it 'sets job to failed if job fails' do
+    job.expects(:completed!).never
+    job.expects(:failed!).once
+    runner_that_fails.run(job)
   end
 
   it 'writes log file' do
-    runner.run(migration)
-    expected_log_file = "#{migration.filename}.log"
+    runner.run(job)
+    expected_log_file = "#{job.filename}.log"
     assert File.exist?(expected_log_file)
   end
 

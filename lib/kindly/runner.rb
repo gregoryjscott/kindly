@@ -8,12 +8,12 @@ module Kindly
       @handler = handler
     end
 
-    def run(migration)
+    def run(job)
       failed = false
       log = capture_stdout do
-        migration.running!
+        job.running!
         begin
-          @handler.run(migration.data)
+          @handler.run(job.data)
         rescue
           failed = true
           puts $!, $@
@@ -21,9 +21,9 @@ module Kindly
       end
 
       if failed
-        migration.failed!(log)
+        job.failed!(log)
       else
-        migration.completed!(log)
+        job.completed!(log)
       end
     end
 

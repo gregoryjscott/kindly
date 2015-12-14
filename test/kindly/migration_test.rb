@@ -2,7 +2,7 @@ require 'kindly'
 require 'minitest/autorun'
 require 'mocha/mini_test'
 
-describe 'Migration' do
+describe 'Job' do
   let(:source) { File.join('test', 'fixtures', 'jobs', 'read_json') }
   let(:config) {
     {
@@ -14,27 +14,27 @@ describe 'Migration' do
     }
   }
   let(:filename) { File.join(config[:pending], 'one.json') }
-  let(:migration) { migration = Kindly::Migration.new(filename) }
+  let(:job) { job = Kindly::Job.new(filename) }
 
   before(:each) do
     Kindly.stubs(:config).returns(config)
   end
 
   describe 'logs' do
-    before(:each) { migration.stubs(:move) }
+    before(:each) { job.stubs(:move) }
 
     it 'when running' do
-      output = capture_output { migration.running! }
+      output = capture_output { job.running! }
       assert running?(output)
     end
 
     it 'when completed' do
-      output = capture_output { migration.completed! }
+      output = capture_output { job.completed! }
       assert completed?(output)
     end
 
     it 'when failed' do
-      output = capture_output { migration.failed! }
+      output = capture_output { job.failed! }
       assert failed?(output)
     end
 
@@ -72,17 +72,17 @@ describe 'Migration' do
     end
 
     it 'when running' do
-      capture_output { migration.running! }
+      capture_output { job.running! }
       assert File.exist?(File.join(config[:running], File.basename(filename)))
     end
 
     it 'when completed' do
-      capture_output { migration.completed! }
+      capture_output { job.completed! }
       assert File.exist?(File.join(config[:completed], File.basename(filename)))
     end
 
     it 'when failed' do
-      capture_output { migration.failed! }
+      capture_output { job.failed! }
       assert File.exist?(File.join(config[:failed], File.basename(filename)))
     end
 

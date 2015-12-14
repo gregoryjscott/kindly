@@ -8,7 +8,7 @@ module Fixtures
         '*'
       end
 
-      def run(migration)
+      def run(job)
         raise "This handler fails every time."
       end
 
