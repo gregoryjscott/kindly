@@ -2,6 +2,7 @@ require 'kindly/migration'
 require 'kindly/runner'
 require 'kindly/handlers'
 require 'kindly/handlers/do_nothing'
+require 'kindly/handlers/update_students'
 require 'kindly/version'
 require 'aws-sdk'
 
@@ -24,10 +25,11 @@ module Kindly
     if message.nil?
       puts "No messages found for #{handler_name}."
     else
+      db = Aws::DynamoDB::Client.new(region: 'us-west-2')
       job_id = message.message_attributes['JobId'].string_value
-      # migration = Migration.new(config, job_id)
-      # handler = Handlers.find(handler_name)
-      # Runner.new(handler).run(migration)
+      migration = Migration.new(config, db, job_id)
+      handler = Handlers.find(handler_name)
+      Runner.new(db, handler).run(migration)
       delete_message(sqs, queue_url, message)
     end
   end
@@ -49,7 +51,7 @@ module Kindly
       queue_url: queue_url,
       receipt_handle: message.receipt_handle
     })
-    puts "Processed message #{message.receipt_handle}."
+    # puts "Processed message #{message.receipt_handle}."
   end
 
   def self.too_many_messages(handler_name)

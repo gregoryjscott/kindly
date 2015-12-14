@@ -3,23 +3,24 @@ require 'kindly'
 module Kindly
   class Runner
 
-    def initialize(handler)
+    def initialize(db, handler)
+      @db = db
       @handler = handler
     end
 
     def run(migration)
-      output = capture_output do
-        begin
+      begin
+        output = capture_output do
           migration.running!
-          @handler.run(migration)
-          migration.completed!
-        rescue Exception
-          puts $!, $@
-          migration.failed!
+          @handler.run(migration.job)
         end
+        migration.completed!(output)
+      rescue Exception
+        puts $!, $@
+        migration.failed!(output)
       end
 
-      write_log_file(migration, output)
+      # write_log_file(migration, output)
     end
 
     private
@@ -35,10 +36,10 @@ module Kindly
       end
     end
 
-    def write_log_file(migration, output)
-      filename = "#{migration.filename}.log"
-      File.open(filename, 'w') { |file| file.write(output) }
-    end
+    # def write_log_file(migration, output)
+    #   filename = "#{migration.filename}.log"
+    #   File.open(filename, 'w') { |file| file.write(output) }
+    # end
 
   end
 end
