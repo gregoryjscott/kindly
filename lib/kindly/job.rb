@@ -16,11 +16,11 @@ module Kindly
 
     def running!
       @db.delete_item({
-        table_name: @config[:pending],
+        table_name: @config[:table_names][:pending],
         key: { 'JobId': @job['JobId'] }
       })
       @db.put_item({
-        table_name: @config[:running],
+        table_name: @config[:table_names][:running],
         item: {
           'JobId' => @job['JobId'],
           'JobDataId' => @job['JobDataId'],
@@ -32,11 +32,11 @@ module Kindly
 
     def completed!(log)
       @db.delete_item({
-        table_name: @config[:running],
+        table_name: @config[:table_names][:running],
         key: { 'JobId': @job['JobId'] }
       })
       @db.put_item({
-        table_name: @config[:completed],
+        table_name: @config[:table_names][:completed],
         item: {
           'JobId' => @job['JobId'],
           'JobDataId' => @job['JobDataId'],
@@ -49,11 +49,11 @@ module Kindly
 
     def failed!(log)
       @db.delete_item({
-        table_name: @config[:running],
+        table_name: @config[:table_names][:running],
         key: { 'JobId': @job['JobId'] }
       })
       @db.put_item({
-        table_name: @config[:failed],
+        table_name: @config[:table_names][:failed],
         item: {
           'JobId' => @job['JobId'],
           'JobDataId' => @job['JobDataId'],
@@ -68,7 +68,7 @@ module Kindly
 
     def fetch_job(job_id)
       response = @db.scan({
-        table_name: @config[:pending],
+        table_name: @config[:table_names][:pending],
         select: 'ALL_ATTRIBUTES',
         filter_expression: "JobId = :job_id",
         expression_attribute_values: { ":job_id": job_id }
@@ -87,7 +87,7 @@ module Kindly
 
     def fetch_job_data(job)
       response = @db.scan({
-        table_name: @config[:data],
+        table_name: @config[:table_names][:data],
         select: 'ALL_ATTRIBUTES',
         filter_expression: "JobDataId = :job_data_id",
         expression_attribute_values: { ":job_data_id": job['JobDataId'] }

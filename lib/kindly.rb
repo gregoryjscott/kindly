@@ -9,11 +9,13 @@ require 'aws-sdk'
 module Kindly
 
   DEFAULTS = {
-    :data => 'job-data',
-    :pending => 'job-pending',
-    :running => 'job-running',
-    :completed => 'job-completed',
-    :failed => 'job-failed'
+    :table_names => {
+      :data => 'job-data',
+      :pending => 'job-pending',
+      :running => 'job-running',
+      :completed => 'job-completed',
+      :failed => 'job-failed'
+    }
   }
 
   def self.run(handler_name, options = {})
