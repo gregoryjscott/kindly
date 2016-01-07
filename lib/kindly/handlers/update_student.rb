@@ -2,7 +2,7 @@ require 'kindly'
 
 module Kindly
   module Handlers
-    class UpdateStudents
+    class UpdateStudent
 
       def run(data)
         puts "The data is #{data}."
@@ -10,6 +10,6 @@ module Kindly
 
     end
 
-    register(:update_students, UpdateStudents.new)
+    register(:update_student, UpdateStudent.new)
   end
 end

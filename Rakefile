@@ -9,8 +9,8 @@ Rake::TestTask.new do |test|
 end
 
 desc 'Try update_students'
-task :update_students do
-  Kindly.run(:update_students)
+task :update_student do
+  Kindly.run :update_student
 end
 
 task :default => :test
