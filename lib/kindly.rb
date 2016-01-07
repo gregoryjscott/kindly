@@ -21,15 +21,13 @@ module Kindly
 
   def self.run(handler_name, options = {})
     queue = Kindly::Queue.new(handler_name)
-    message = queue.receive_message
-    if message.nil?
+    job_id, message = queue.pop
+    if job_id.nil? || message.nil?
       puts "No messages found for #{handler_name}."
     else
-      config = DEFAULTS.merge(options)
-      job_id = message.message_attributes['JobId'].string_value
-      job = Job.new(config, job_id)
-      result = Runner.new(handler_name).run(job)
-      queue.delete_message(message) if result[:success]
+      job = Job.new(DEFAULTS.merge(options), job_id)
+      Runner.new(handler_name).run(job)
+      queue.delete(message)
     end
   end
 

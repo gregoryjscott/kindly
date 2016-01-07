@@ -22,10 +22,8 @@ module Kindly
 
       if failed
         job.failed!(log)
-        { success: false }
       else
         job.completed!(log)
-        { success: true }
       end
     end
 

@@ -14,17 +14,17 @@ describe 'Kindly::Runner' do
     job.stubs(:running!)
   end
 
-  it 'returns if the job is a success' do
-    job.stubs(:completed!)
-    result = Kindly::Runner.new(:do_nothing).run(job)
-    assert result[:success]
-  end
-
-  it 'returns if the job is not a success' do
-    job.stubs(:failed!)
-    result = Kindly::Runner.new(:fail).run(job)
-    refute result[:success]
-  end
+  # it 'returns if the job is a success' do
+  #   job.stubs(:completed!)
+  #   result = Kindly::Runner.new(:do_nothing).run(job)
+  #   assert result[:success]
+  # end
+  #
+  # it 'returns if the job is not a success' do
+  #   job.stubs(:failed!)
+  #   result = Kindly::Runner.new(:fail).run(job)
+  #   refute result[:success]
+  # end
 
 end
 
