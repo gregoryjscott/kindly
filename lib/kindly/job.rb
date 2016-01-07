@@ -77,9 +77,7 @@ module Kindly
       })
 
       if response.items.length == 0
-        puts no_jobs
-        completed!
-        return
+        raise no_jobs
       elsif response.items.length > 1
         raise too_many_jobs
       end
@@ -96,9 +94,7 @@ module Kindly
       })
 
       if response.items.length == 0
-        puts no_job_data
-        completed!
-        return
+        raise no_job_data
       elsif response.items.length > 1
         raise too_many_job_data
       end

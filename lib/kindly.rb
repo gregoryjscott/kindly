@@ -20,13 +20,12 @@ module Kindly
   }
 
   def self.run(handler_name, options = {})
-    config = DEFAULTS.merge(options)
     queue = Kindly::Queue.new(handler_name)
-
     message = queue.receive_message
     if message.nil?
       puts "No messages found for #{handler_name}."
     else
+      config = DEFAULTS.merge(options)
       job = Job.new(config, message)
       handler = Handlers.find(handler_name)
       Runner.new(handler).run(job)

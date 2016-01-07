@@ -22,11 +22,6 @@ describe 'Kindly::Runner' do
     failed_job.stubs(:failed!)
   end
 
-  it 'returns the job output' do
-    result = Kindly::Runner.new(return_five).run(successful_job)
-    assert_equal 5, result[:output]
-  end
-
   it 'returns if the job is a success' do
     result = Kindly::Runner.new(return_five).run(successful_job)
     assert result[:success]

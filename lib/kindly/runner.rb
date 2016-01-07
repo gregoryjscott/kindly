@@ -22,15 +22,10 @@ module Kindly
 
       if failed
         job.failed!(log)
-        {
-          success: false
-        }
+        { success: false }
       else
         job.completed!(log, output)
-        {
-          success: true,
-          output: output
-        }
+        { success: true }
       end
     end
 
