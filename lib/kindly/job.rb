@@ -30,7 +30,7 @@ module Kindly
       puts "Job: #{@job['JobId']} running."
     end
 
-    def completed!(log)
+    def completed!(log, output)
       @db.delete_item({
         table_name: @config[:table_names][:running],
         key: { 'JobId': @job['JobId'] }
@@ -40,6 +40,7 @@ module Kindly
         item: {
           'JobId' => @job['JobId'],
           'JobDataId' => @job['JobDataId'],
+          'Output' => output,
           'Log' => log,
           'Created' => Time.now.to_s,
         }

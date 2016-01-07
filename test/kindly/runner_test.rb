@@ -1,3 +1,44 @@
+require 'kindly'
+require 'minitest/autorun'
+require 'mocha/mini_test'
+require 'fixtures/handlers/fail'
+require 'fixtures/handlers/return_five'
+
+
+describe 'Kindly::Runner' do
+
+  let(:return_five) { Fixtures::Handlers::ReturnFive.new }
+  let(:fails) { Fixtures::Handlers::Fail.new }
+  let(:successful_job) { mock() }
+  let(:failed_job) { mock() }
+
+  before(:each) do
+    successful_job.stubs(:data)
+    successful_job.stubs(:running!)
+    successful_job.stubs(:completed!)
+
+    failed_job.stubs(:data)
+    failed_job.stubs(:running!)
+    failed_job.stubs(:failed!)
+  end
+
+  it 'returns the job output' do
+    result = Kindly::Runner.new(return_five).run(successful_job)
+    assert_equal 5, result[:output]
+  end
+
+  it 'returns if the job is a success' do
+    result = Kindly::Runner.new(return_five).run(successful_job)
+    assert result[:success]
+  end
+
+  it 'returns if the job is not a success' do
+    result = Kindly::Runner.new(fails).run(failed_job)
+    refute result[:success]
+  end
+
+end
+
 # require 'kindly'
 # require 'minitest/autorun'
 # require 'mocha/mini_test'

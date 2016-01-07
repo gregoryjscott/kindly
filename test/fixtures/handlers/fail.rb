@@ -4,11 +4,7 @@ module Fixtures
   module Handlers
     class Fail
 
-      def glob
-        '*'
-      end
-
-      def run(job)
+      def run(data)
         raise "This handler fails every time."
       end
 
