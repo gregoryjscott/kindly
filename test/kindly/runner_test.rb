@@ -7,8 +7,6 @@ require 'fixtures/handlers/return_five'
 
 describe 'Kindly::Runner' do
 
-  let(:return_five) { Fixtures::Handlers::ReturnFive.new }
-  let(:fails) { Fixtures::Handlers::Fail.new }
   let(:successful_job) { mock() }
   let(:failed_job) { mock() }
 
@@ -23,12 +21,12 @@ describe 'Kindly::Runner' do
   end
 
   it 'returns if the job is a success' do
-    result = Kindly::Runner.new(return_five).run(successful_job)
+    result = Kindly::Runner.new(:return_five).run(successful_job)
     assert result[:success]
   end
 
   it 'returns if the job is not a success' do
-    result = Kindly::Runner.new(fails).run(failed_job)
+    result = Kindly::Runner.new(:fail).run(failed_job)
     refute result[:success]
   end
 

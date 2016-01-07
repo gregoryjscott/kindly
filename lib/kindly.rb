@@ -26,10 +26,10 @@ module Kindly
       puts "No messages found for #{handler_name}."
     else
       config = DEFAULTS.merge(options)
-      job = Job.new(config, message)
-      handler = Handlers.find(handler_name)
-      Runner.new(handler).run(job)
-      queue.delete_message(message)
+      job_id = message.message_attributes['JobId'].string_value
+      job = Job.new(config, job_id)
+      result = Runner.new(handler_name).run(job)
+      queue.delete_message(message) if result[:success]
     end
   end
 

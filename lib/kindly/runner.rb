@@ -3,8 +3,8 @@ require 'kindly'
 module Kindly
   class Runner
 
-    def initialize(handler)
-      @handler = handler
+    def initialize(handler_name)
+      @handler = Handlers.find(handler_name)
     end
 
     def run(job)
