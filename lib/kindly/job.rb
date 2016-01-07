@@ -7,11 +7,12 @@ module Kindly
 
     attr_reader :data
 
-    def initialize(config, job_id)
+    def initialize(config, message)
       @config = config
       @db = Aws::DynamoDB::Client.new(region: 'us-west-2')
-      @job = fetch_job(job_id)
-      @data = fetch_job_data(@job)
+      @job_id = message.message_attributes['JobId'].string_value
+      @job = fetch_job
+      @data = fetch_job_data
     end
 
     def running!
@@ -67,12 +68,12 @@ module Kindly
 
     private
 
-    def fetch_job(job_id)
+    def fetch_job
       response = @db.scan({
         table_name: @config[:table_names][:pending],
         select: 'ALL_ATTRIBUTES',
         filter_expression: "JobId = :job_id",
-        expression_attribute_values: { ":job_id": job_id }
+        expression_attribute_values: { ":job_id": @job_id }
       })
 
       if response.items.length == 0
@@ -86,12 +87,12 @@ module Kindly
       response.items[0]
     end
 
-    def fetch_job_data(job)
+    def fetch_job_data
       response = @db.scan({
         table_name: @config[:table_names][:data],
         select: 'ALL_ATTRIBUTES',
         filter_expression: "JobDataId = :job_data_id",
-        expression_attribute_values: { ":job_data_id": job['JobDataId'] }
+        expression_attribute_values: { ":job_data_id": @job['JobDataId'] }
       })
 
       if response.items.length == 0
@@ -105,19 +106,19 @@ module Kindly
       response.items[0]
     end
 
-    def no_jobs(job_id)
+    def no_jobs
       "No pending jobs found for #{@job_id}."
     end
 
-    def no_job_data(job_id)
+    def no_job_data
       "No job data found for #{@job_id}."
     end
 
-    def too_many_jobs(job_id)
+    def too_many_jobs
       "Found too many pending job records for #{@job_id}."
     end
 
-    def too_many_job_data(job_id)
+    def too_many_job_data
       "Found too many job data records for #{@job_id}."
     end
 
