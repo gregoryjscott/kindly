@@ -3,6 +3,21 @@ require 'minitest/autorun'
 require 'mocha/mini_test'
 
 describe 'Kindly' do
+
+  it 'returns true if message was handled' do
+    Kindly::Runner.any_instance.stubs(:run)
+    Kindly::Queue.any_instance.stubs(:pop).returns([1, { hello: 'world' }])
+    Kindly::Queue.any_instance.stubs(:delete)
+    assert Kindly.run(:do_nothing)
+  end
+
+  it 'returns false if message was not found' do
+    Kindly::Runner.any_instance.stubs(:run)
+    Kindly::Queue.any_instance.stubs(:pop).returns([nil, nil])
+    Kindly::Queue.any_instance.stubs(:delete)
+    capture_output { refute Kindly.run(:do_nothing) }
+  end
+
   # let(:read_json) { File.join('test', 'fixtures', 'jobs', 'read_json') }
   # let(:pending) { File.join(read_json, 'pending') }
   #

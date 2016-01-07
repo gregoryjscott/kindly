@@ -18,9 +18,9 @@ module Kindly
         max_number_of_messages: 1
       })
       raise too_many_messages if response.messages.length > 1
+      return [nil, nil] if response.messages.length == 0
       message = response.messages[0]
-      return [ nil, nil ] unless message
-      [ message.message_attributes['JobId'].string_value, message ]
+      [message.message_attributes['JobId'].string_value, message]
     end
 
     def delete(message)

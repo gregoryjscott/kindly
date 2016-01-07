@@ -24,10 +24,12 @@ module Kindly
     job_id, message = queue.pop
     if job_id.nil? || message.nil?
       puts "No messages found for #{handler_name}."
+      false
     else
       job = Job.new(DEFAULTS.merge(options), job_id)
       Runner.new(handler_name).run(job)
       queue.delete(message)
+      true
     end
   end
 
