@@ -11,6 +11,7 @@ module Kindly
       failed = false
       output = nil
       log = capture_stdout do
+        job.fetch
         job.running!
         begin
           output = @handler.run(job.data)

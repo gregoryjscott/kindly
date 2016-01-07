@@ -7,26 +7,23 @@ require 'fixtures/handlers/return_five'
 
 describe 'Kindly::Runner' do
 
-  let(:successful_job) { mock() }
-  let(:failed_job) { mock() }
+  let(:job) { mock() }
 
   before(:each) do
-    successful_job.stubs(:data)
-    successful_job.stubs(:running!)
-    successful_job.stubs(:completed!)
-
-    failed_job.stubs(:data)
-    failed_job.stubs(:running!)
-    failed_job.stubs(:failed!)
+    job.stubs(:fetch)
+    job.stubs(:data)
+    job.stubs(:running!)
   end
 
   it 'returns if the job is a success' do
-    result = Kindly::Runner.new(:return_five).run(successful_job)
+    job.stubs(:completed!)
+    result = Kindly::Runner.new(:return_five).run(job)
     assert result[:success]
   end
 
   it 'returns if the job is not a success' do
-    result = Kindly::Runner.new(:fail).run(failed_job)
+    job.stubs(:failed!)
+    result = Kindly::Runner.new(:fail).run(job)
     refute result[:success]
   end
 
