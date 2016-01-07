@@ -7,9 +7,9 @@ module Kindly
 
     attr_reader :data
 
-    def initialize(config, db, job_id)
+    def initialize(config, job_id)
       @config = config
-      @db = db
+      @db = Aws::DynamoDB::Client.new(region: 'us-west-2')
       @job = fetch_job(job_id)
       @data = fetch_job_data(@job)
     end
