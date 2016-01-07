@@ -19,53 +19,23 @@ module Kindly
     end
 
     def running!
-      @db.delete_item({
-        table_name: @config[:table_names][:pending],
-        key: { 'JobId': @id }
-      })
-      @db.put_item({
-        table_name: @config[:table_names][:running],
-        item: {
-          'JobId' => @id,
-          'JobDataId' => @fields['JobDataId'],
-          'Created' => Time.now.to_s,
-        }
-      })
+      delete(:pending)
+      insert(:running)
       puts "Job: #{@id} running."
     end
 
     def completed!(log, output)
-      @db.delete_item({
-        table_name: @config[:table_names][:running],
-        key: { 'JobId': @id }
-      })
-      @db.put_item({
-        table_name: @config[:table_names][:completed],
-        item: {
-          'JobId' => @id,
-          'JobDataId' => @fields['JobDataId'],
-          'Output' => output,
-          'Log' => log,
-          'Created' => Time.now.to_s,
-        }
-      })
+      delete(:running)
+      @fields['Output'] = output
+      @fields['Log'] = log
+      insert(:completed)
       puts "Job: #{@id} completed."
     end
 
     def failed!(log)
-      @db.delete_item({
-        table_name: @config[:table_names][:running],
-        key: { 'JobId': @id }
-      })
-      @db.put_item({
-        table_name: @config[:table_names][:failed],
-        item: {
-          'JobId' => @id,
-          'JobDataId' => @fields['JobDataId'],
-          'Log' => log,
-          'Created' => Time.now.to_s,
-        }
-      })
+      delete(:running)
+      @fields['Log'] = log
+      insert(:failed)
       puts "Job: #{@id} failed."
     end
 
@@ -103,6 +73,21 @@ module Kindly
       end
 
       response.items[0]
+    end
+
+    def insert(table_name)
+      @fields['Created'] = Time.now.to_s
+      @db.put_item({
+        table_name: @config[:table_names][table_name],
+        item: @fields
+      })
+    end
+
+    def delete(table_name)
+      @db.delete_item({
+        table_name: @config[:table_names][table_name],
+        key: { 'JobId': @id }
+      })
     end
 
     def no_jobs
