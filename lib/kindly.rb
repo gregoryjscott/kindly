@@ -32,7 +32,7 @@ module Kindly
       job_id = message.message_attributes['JobId'].string_value
       job = Job.new(config, db, job_id)
       handler = Handlers.find(handler_name)
-      Runner.new(db, handler).run(job)
+      Runner.new(handler).run(job)
       delete_message(sqs, queue_url, message)
     end
   end

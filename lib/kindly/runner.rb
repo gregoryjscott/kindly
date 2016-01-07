@@ -3,8 +3,7 @@ require 'kindly'
 module Kindly
   class Runner
 
-    def initialize(db, handler)
-      @db = db
+    def initialize(handler)
       @handler = handler
     end
 
