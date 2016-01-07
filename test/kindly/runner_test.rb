@@ -2,7 +2,6 @@ require 'kindly'
 require 'minitest/autorun'
 require 'mocha/mini_test'
 require 'fixtures/handlers/fail'
-require 'fixtures/handlers/return_five'
 
 
 describe 'Kindly::Runner' do
@@ -17,7 +16,7 @@ describe 'Kindly::Runner' do
 
   it 'returns if the job is a success' do
     job.stubs(:completed!)
-    result = Kindly::Runner.new(:return_five).run(job)
+    result = Kindly::Runner.new(:do_nothing).run(job)
     assert result[:success]
   end
 

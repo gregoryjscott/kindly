@@ -24,9 +24,8 @@ module Kindly
       puts "Job: #{@id} running."
     end
 
-    def completed!(log, output)
+    def completed!(log)
       delete(:running)
-      @fields['Output'] = output
       @fields['Log'] = log
       insert(:completed)
       puts "Job: #{@id} completed."

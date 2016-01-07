@@ -9,12 +9,11 @@ module Kindly
 
     def run(job)
       failed = false
-      output = nil
       log = capture_stdout do
         job.fetch
         job.running!
         begin
-          output = @handler.run(job.data)
+          @handler.run(job.data)
         rescue
           failed = true
           puts $!, $@
@@ -25,7 +24,7 @@ module Kindly
         job.failed!(log)
         { success: false }
       else
-        job.completed!(log, output)
+        job.completed!(log)
         { success: true }
       end
     end
