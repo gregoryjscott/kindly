@@ -26,7 +26,8 @@ module Kindly
       puts "No messages found for #{handler_name}."
       false
     else
-      job = Job.new(DEFAULTS.merge(options), job_id)
+      config = DEFAULTS.merge(options)
+      job = Job.new(config, job_id)
       Runner.new(handler_name).run(job)
       queue.delete(message)
       true
