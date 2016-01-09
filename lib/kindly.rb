@@ -23,7 +23,7 @@ module Kindly
     queue = Kindly::Queue.new(handler_name)
     job_id, message = queue.pop
     if job_id.nil? || message.nil?
-      puts "No messages found for #{handler_name}."
+      puts "No pending requests for #{handler_name} exist."
       false
     else
       config = DEFAULTS.merge(options)
@@ -32,6 +32,34 @@ module Kindly
       queue.delete(message)
       true
     end
+  end
+
+  def self.request(handler_name, input = {})
+    db = Aws::DynamoDB::Client.new(region: 'us-west-2')
+    job_id = SecureRandom.uuid
+    job_data_id = SecureRandom.uuid
+    timestamp = Time.now.to_s
+
+    db.put_item({
+      table_name: 'job-data',
+      item: {
+        'JobDataId' => job_data_id,
+        'Data' => { hello: 'world' },
+        'Created' => timestamp
+      }
+    })
+
+    db.put_item({
+      table_name: 'job-pending',
+      item: {
+        'JobId' => job_id,
+        'JobDataId' => job_data_id,
+        'Created' => timestamp
+      }
+    })
+
+    queue = Kindly::Queue.new(handler_name)
+    queue.insert(job_id)
   end
 
 end

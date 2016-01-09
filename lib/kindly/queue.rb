@@ -11,6 +11,19 @@ module Kindly
       @queue_url = "https://sqs.us-west-2.amazonaws.com/529271381487/#{queue}"
     end
 
+    def insert(job_id)
+      @sqs.send_message({
+        queue_url: @queue_url,
+        message_body: "#{@handler_name} has been requested.",
+        message_attributes: {
+          'JobId' => {
+            string_value: job_id,
+            data_type: "String",
+          },
+        },
+      })
+    end
+
     def pop
       response = @sqs.receive_message({
         queue_url: @queue_url,
