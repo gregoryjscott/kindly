@@ -3,11 +3,35 @@ require 'kindly'
 module Kindly
   class Runner
 
-    def initialize(handler_name)
+    DEFAULTS = {
+      :table_names => {
+        :data => 'job-data',
+        :pending => 'job-pending',
+        :running => 'job-running',
+        :completed => 'job-completed',
+        :failed => 'job-failed'
+      }
+    }
+
+    def run(handler_name)
       @handler = Handlers.find(handler_name)
+      queue = Kindly::Queue.new(handler_name)
+      job_id, message = queue.pop
+      if job_id.nil? || message.nil?
+        puts "No pending requests for #{handler_name} exist."
+        false
+      else
+        config = DEFAULTS.merge(options)
+        job = Job.new(config, job_id)
+        run_job(job)
+        queue.delete(message)
+        true
+      end
     end
 
-    def run(job)
+    private
+
+    def run_job(job)
       failed = false
       log = capture_stdout do
         job.fetch
