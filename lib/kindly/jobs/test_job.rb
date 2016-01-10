@@ -5,7 +5,7 @@ module Kindly
     class TestJob
 
       def run
-        puts "Testing 1, 2, 3."
+        puts "fields: #{@fields}"
       end
 
     end

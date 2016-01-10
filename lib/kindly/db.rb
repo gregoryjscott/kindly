@@ -20,13 +20,17 @@ module Kindly
     end
 
     def insert_job(job_name, input)
-      data = insert_job_data(input)
       job = {
         'JobId' => SecureRandom.uuid,
         'JobName' => job_name,
-        'JobDataId' => data['JobDataId'],
         'RequestedAt' => Time.now.to_s
       }
+
+      unless input.empty?
+        data = insert_job_data(input)
+        job['InputDataId'] = data['JobDataId']
+      end
+
       @db.put_item({ table_name: 'job-pending', item: job })
       job
     end
@@ -35,8 +39,11 @@ module Kindly
       job = Registry.find(job_name)
       fields = fetch_job_fields(job_id)
       add_fields_to_job(job, fields)
-      input = fetch_job_data(job.fields['JobDataId'])
-      add_input_to_job(job, input)
+
+      if job.fields.has_key?('InputDataId')
+        input = fetch_job_data(job.fields['InputDataId'])
+        add_input_to_job(job, input)
+      end
       job
     end
 
@@ -86,7 +93,7 @@ module Kindly
 
       raise no_job_data(job_data_id) if response.items.length == 0
       raise too_many_job_data(job_data_id) if response.items.length > 1
-      response.items[0]
+      response.items[0]['Data']
     end
 
     def add_fields_to_job(job, fields)
