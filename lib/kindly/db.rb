@@ -52,7 +52,7 @@ module Kindly
 
       if job.fields.has_key?('InputDataId')
         input = fetch_job_data(job.fields['InputDataId'])
-        add_input_to_job(job, input)
+        job.input = input
       end
       job
     end
@@ -108,19 +108,6 @@ module Kindly
         end
       end
       job.fields = fields
-    end
-
-    def add_input_to_job(job, input)
-      job.instance_eval do
-        def input
-          @input
-        end
-
-        def input=(val)
-          @input = val
-        end
-      end
-      job.input = input
     end
 
     def insert_job_status(job, job_status)
