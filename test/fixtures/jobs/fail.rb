@@ -2,7 +2,7 @@ require 'kindly'
 
 module Fixtures
   module Jobs
-    class Fail < Kindly::Job
+    class Fail
 
       def run
         raise "This handler fails every time."

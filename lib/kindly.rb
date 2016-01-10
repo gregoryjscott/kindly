@@ -1,4 +1,3 @@
-require 'kindly/job'
 require 'kindly/queue'
 require 'kindly/db'
 require 'kindly/runner'

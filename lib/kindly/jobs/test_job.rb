@@ -2,7 +2,7 @@ require 'kindly'
 
 module Kindly
   module Jobs
-    class TestJob < Kindly::Job
+    class TestJob
 
       def run
         puts "Testing 1, 2, 3."

@@ -33,8 +33,10 @@ module Kindly
 
     def fetch_job(job_name, job_id)
       job = Registry.find(job_name)
-      job.fields = fetch_job_fields(job_id)
-      job.input = fetch_job_data(job.fields['JobDataId'])
+      fields = fetch_job_fields(job_id)
+      add_fields_to_job(job, fields)
+      input = fetch_job_data(job.fields['JobDataId'])
+      add_input_to_job(job, input)
       job
     end
 
@@ -85,6 +87,32 @@ module Kindly
       raise no_job_data(job_data_id) if response.items.length == 0
       raise too_many_job_data(job_data_id) if response.items.length > 1
       response.items[0]
+    end
+
+    def add_fields_to_job(job, fields)
+      job.instance_eval do
+        def fields
+          @fields
+        end
+
+        def fields=(val)
+          @fields = val
+        end
+      end
+      job.fields = fields
+    end
+
+    def add_input_to_job(job, input)
+      job.instance_eval do
+        def input
+          @input
+        end
+
+        def input=(val)
+          @input = val
+        end
+      end
+      job.input = input
     end
 
     def insert_job_status(job, job_status)

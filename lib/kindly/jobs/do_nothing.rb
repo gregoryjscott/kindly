@@ -2,7 +2,7 @@ require 'kindly'
 
 module Kindly
   module Jobs
-    class DoNothing < Kindly::Job
+    class DoNothing
 
       def run
         puts "Nothing happened."
