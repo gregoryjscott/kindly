@@ -20,19 +20,29 @@ module Kindly
     end
 
     def insert_job(job_name, input)
-      job = {
+      item = {
         'JobId' => SecureRandom.uuid,
         'JobName' => job_name,
-        'RequestedAt' => Time.now.to_s
+        'CreatedAt' => Time.now.to_s
       }
 
       unless input.empty?
         data = insert_job_data(input)
-        job['InputDataId'] = data['JobDataId']
+        item['InputDataId'] = data['JobDataId']
       end
 
-      @db.put_item({ table_name: 'job-pending', item: job })
-      job
+      @db.put_item({ table_name: 'job-pending', item: item })
+      item
+    end
+
+    def insert_job_data(data)
+      item = {
+        'JobDataId' => SecureRandom.uuid,
+        'Data' => data,
+        'CreatedAt' => Time.now.to_s
+      }
+      @db.put_item({ table_name: 'job-data', item: item })
+      item
     end
 
     def fetch_job(job_name, job_id)
@@ -60,15 +70,6 @@ module Kindly
     end
 
     private
-
-    def insert_job_data(input)
-      data = {
-        'JobDataId' => SecureRandom.uuid,
-        'Data' => input
-      }
-      @db.put_item({ table_name: 'job-data', item: data })
-      data
-    end
 
     def fetch_job_fields(job_id)
       response = @db.scan({

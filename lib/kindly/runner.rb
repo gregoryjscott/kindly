@@ -25,20 +25,26 @@ module Kindly
     private
 
     def run_job(job)
-      job.fields['StartedAt'] = Time.now.to_s
       @db.update_job_status(job, :running)
-
       failed = false
+
       log = capture_stdout do
+        job.fields['StartedAt'] = Time.now.to_s
+        puts "#{job.fields['JobId']} started at #{job.fields['StartedAt']}."
         begin
           job.run
         rescue
           failed = true
           puts $!, $@
         end
-      end
+        job.fields['FinishedAt'] = Time.now.to_s
+        puts "#{job.fields['JobId']} finished at #{job.fields['FinishedAt']}."
 
-      job.fields['StoppedAt'] = Time.now.to_s
+        if job.respond_to? :output
+          data = @db.insert_job_data(job.output)
+          job.fields['OutputDataId'] = data['JobDataId']
+        end
+      end
       job.fields['Log'] = log
 
       if failed
