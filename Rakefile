@@ -8,14 +8,14 @@ Rake::TestTask.new do |test|
   test.verbose = true
 end
 
-desc 'Run update_students job'
-task :update_student do
-  Kindly.run :update_student
+desc 'Request test_job'
+task :request_test_job do
+  Kindly.request :test_job
 end
 
-desc 'Request run_bot job'
-task :run_bot do
-  Kindly.request :run_bot
+desc 'Run test_job'
+task :run_test_job do
+  Kindly.run :test_job
 end
 
 task :default => :test

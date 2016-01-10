@@ -1,15 +1,15 @@
 require 'kindly'
 
 module Fixtures
-  module Handlers
-    class Fail
+  module Jobs
+    class Fail < Kindly::Job
 
-      def run(data)
+      def run
         raise "This handler fails every time."
       end
 
     end
 
-    Kindly::Handlers.register(:fail, Fail.new)
+    Kindly::Registry.register(:fail, Fail.new)
   end
 end

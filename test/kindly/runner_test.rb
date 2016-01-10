@@ -1,18 +1,18 @@
 require 'kindly'
 require 'minitest/autorun'
 require 'mocha/mini_test'
-require 'fixtures/handlers/fail'
+require 'fixtures/jobs/fail'
 
 
 describe 'Kindly::Runner' do
 
-  let(:job) { mock() }
-
-  before(:each) do
-    job.stubs(:fetch)
-    job.stubs(:data)
-    job.stubs(:running!)
-  end
+  # let(:job) { mock() }
+  #
+  # before(:each) do
+  #   job.stubs(:fetch)
+  #   job.stubs(:data)
+  #   job.stubs(:running!)
+  # end
 
   # it 'returns if the job is a success' do
   #   job.stubs(:completed!)

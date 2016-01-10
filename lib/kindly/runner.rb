@@ -13,20 +13,22 @@ module Kindly
       }
     }
 
-    def run(handler_name)
-      @handler = Handlers.find(handler_name)
-      queue = Kindly::Queue.new(handler_name)
-      job_id, message = queue.pop
-      if job_id.nil? || message.nil?
-        puts "No pending requests for #{handler_name} exist."
-        false
-      else
-        config = DEFAULTS.merge(options)
-        job = Job.new(config, job_id)
-        run_job(job)
-        queue.delete(message)
-        true
+    def initialize
+      @queue = Queue.new
+      @db = DB.new
+    end
+
+    def run(job_name)
+      job_id = @queue.peek(job_name)
+      if job_id.nil?
+        puts "No pending requests for #{job_name}."
+        return false
       end
+
+      job = @db.fetch_job(job_name, job_id)
+      run_job(job)
+      @queue.remove(job_name, job_id)
+      job.respond_to?(:output) ? job.output : {}
     end
 
     private
@@ -34,20 +36,22 @@ module Kindly
     def run_job(job)
       failed = false
       log = capture_stdout do
-        job.fetch
-        job.running!
+        job.fields['StartedAt'] = Time.now.to_s
+        @db.update_job_status(job, :running)
         begin
-          @handler.run(job.data)
+          job.run
         rescue
           failed = true
           puts $!, $@
         end
       end
 
+      job.fields['StoppedAt'] = Time.now.to_s
+      job.fields['Log'] = log
       if failed
-        job.failed!(log)
+        @db.update_job_status(job, :failed)
       else
-        job.completed!(log)
+        @db.update_job_status(job, :completed)
       end
     end
 

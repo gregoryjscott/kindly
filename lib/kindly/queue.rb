@@ -4,17 +4,14 @@ require 'aws-sdk'
 module Kindly
   class Queue
 
-    def initialize(handler_name)
-      @handler_name = handler_name
+    def initialize
       @sqs = Aws::SQS::Client.new(region: 'us-west-2')
-      queue = handler_name.to_s.gsub('_', '-')
-      @queue_url = "https://sqs.us-west-2.amazonaws.com/529271381487/#{queue}"
     end
 
-    def insert(job_id)
+    def add(job_name, job_id)
       @sqs.send_message({
-        queue_url: @queue_url,
-        message_body: "#{@handler_name} has been requested.",
+        queue_url: queue_url(job_name),
+        message_body: "#{@job_name} has been requested.",
         message_attributes: {
           'JobId' => {
             string_value: job_id,
@@ -24,29 +21,38 @@ module Kindly
       })
     end
 
-    def pop
+    def peek(job_name)
       response = @sqs.receive_message({
-        queue_url: @queue_url,
+        queue_url: queue_url(job_name),
         message_attribute_names: ['JobId'],
         max_number_of_messages: 1
       })
-      raise too_many_messages if response.messages.length > 1
-      return [nil, nil] if response.messages.length == 0
+      raise too_many_messages(job_name) if response.messages.length > 1
+      return nil if response.messages.length == 0
+
       message = response.messages[0]
-      [message.message_attributes['JobId'].string_value, message]
+      job_id = message.message_attributes['JobId'].string_value
+      @messages_in_flight = { job_id => message }
+      job_id
     end
 
-    def delete(message)
+    def remove(job_name, job_id)
+      message = @messages_in_flight[job_id]
       @sqs.delete_message({
-        queue_url: @queue_url,
+        queue_url: queue_url(job_name),
         receipt_handle: message.receipt_handle
       })
     end
 
     private
 
-    def too_many_messages
-      "Found too many messages for #{@handler_name}."
+    def queue_url(job_name)
+      queue = job_name.to_s.gsub('_', '-')
+      "https://sqs.us-west-2.amazonaws.com/529271381487/#{queue}"
+    end
+
+    def too_many_messages(job_name)
+      "Found too many messages for #{job_name}."
     end
 
   end

@@ -1,0 +1,15 @@
+require 'kindly'
+
+module Kindly
+  module Jobs
+    class DoNothing < Kindly::Job
+
+      def run
+        puts "Nothing happened."
+      end
+
+    end
+
+    Kindly::Registry.register(:do_nothing, DoNothing.new)
+  end
+end
