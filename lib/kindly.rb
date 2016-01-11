@@ -1,11 +1,13 @@
-require 'kindly/queue'
 require 'kindly/db'
-require 'kindly/runner'
-require 'kindly/requester'
+require 'kindly/queue'
 require 'kindly/registry'
+require 'kindly/requester'
+require 'kindly/runner'
+require 'kindly/version'
 require 'kindly/jobs/do_nothing'
 require 'kindly/jobs/test_job'
-require 'kindly/version'
+require 'kindly/jobs/test_job_with_input'
+require 'kindly/jobs/test_job_with_output'
 require 'aws-sdk'
 
 module Kindly
