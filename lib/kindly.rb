@@ -1,5 +1,12 @@
-require 'require_all'
-require_all 'lib'
+require 'kindly/queue'
+require 'kindly/db'
+require 'kindly/runner'
+require 'kindly/requester'
+require 'kindly/registry'
+require 'kindly/jobs/do_nothing'
+require 'kindly/jobs/test_job'
+require 'kindly/version'
+require 'aws-sdk'
 
 module Kindly
 
