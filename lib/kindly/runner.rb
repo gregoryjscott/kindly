@@ -25,6 +25,7 @@ module Kindly
     private
 
     def run_job(job)
+      job.fields['RanBy'] = @db.user.user_name
       @db.update_job_status(job, :running)
       failed = false
 

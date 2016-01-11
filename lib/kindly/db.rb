@@ -19,11 +19,16 @@ module Kindly
       @db = Aws::DynamoDB::Client.new(region: 'us-west-2')
     end
 
+    def user
+      @user ||= Aws::IAM::CurrentUser.new(region: 'us-west-2')
+    end
+
     def insert_job(job_name, input)
       item = {
         'JobId' => SecureRandom.uuid,
         'JobName' => job_name,
-        'CreatedAt' => Time.now.to_s
+        'RequestedAt' => Time.now.to_s,
+        'RequestedBy' => user.user_name
       }
 
       unless input.empty?
@@ -111,6 +116,7 @@ module Kindly
     end
 
     def insert_job_status(job, job_status)
+      job.fields['CreatedAt'] = Time.now.to_s
       @db.put_item({
         table_name: @config[:table_names][job_status],
         item: job.fields
