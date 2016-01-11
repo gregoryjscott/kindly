@@ -46,7 +46,7 @@ module Kindly
           job.fields['OutputDataId'] = data['JobDataId']
         end
       end
-      job.fields['Log'] = log
+      job.fields['Log'] = log.split("\n")
 
       if failed
         @db.update_job_status(job, :failed)
