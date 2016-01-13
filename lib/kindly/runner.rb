@@ -25,11 +25,11 @@ module Kindly
 
     def run_job(job)
       job.fields['RanBy'] = @db.user.user_name
+      job.fields['StartedAt'] = Time.now.to_s
       @db.update_job_status(job, :running)
-      failed = false
 
+      failed = false
       log = capture_stdout do
-        job.fields['StartedAt'] = Time.now.to_s
         puts "#{job.fields['JobId']} started at #{job.fields['StartedAt']}."
         begin
           job.run
