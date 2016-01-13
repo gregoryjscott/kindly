@@ -9,7 +9,7 @@ module Kindly
     end
 
     def run(job_name)
-      job_id = @queue.peek(job_name)
+      job_id = @queue.pop(job_name)
       if job_id.nil?
         puts "No pending requests for #{job_name}."
         return false
@@ -17,7 +17,6 @@ module Kindly
 
       job = @db.fetch_job(job_name, job_id)
       run_job(job)
-      @queue.remove(job_name, job_id)
 
       job.respond_to?(:output) ? job.output : {}
     end

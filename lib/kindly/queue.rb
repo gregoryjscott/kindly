@@ -21,7 +21,7 @@ module Kindly
       })
     end
 
-    def peek(job_name)
+    def pop(job_name)
       response = @sqs.receive_message({
         queue_url: queue_url(job_name),
         message_attribute_names: ['JobId'],
@@ -32,16 +32,13 @@ module Kindly
 
       message = response.messages[0]
       job_id = message.message_attributes['JobId'].string_value
-      @messages_in_flight = { job_id => message }
-      job_id
-    end
 
-    def remove(job_name, job_id)
-      message = @messages_in_flight[job_id]
       @sqs.delete_message({
         queue_url: queue_url(job_name),
         receipt_handle: message.receipt_handle
       })
+
+      job_id
     end
 
     private
