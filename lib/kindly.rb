@@ -20,4 +20,8 @@ module Kindly
     Requester.new.request(job_name, input)
   end
 
+  def self.ping
+    DB.new.ping
+  end
+
 end

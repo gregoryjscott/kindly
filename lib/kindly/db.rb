@@ -6,6 +6,7 @@ module Kindly
 
     DEFAULTS = {
       :table_names => {
+        :ping => 'user-ping',
         :data => 'job-data',
         :pending => 'job-pending',
         :running => 'job-running',
@@ -21,6 +22,17 @@ module Kindly
 
     def user
       @user ||= Aws::IAM::CurrentUser.new(region: 'us-west-2')
+    end
+
+    def ping
+      item = {
+        'PingId' => SecureRandom.uuid,
+        'PingBy' => user.user_name,
+        'PingAt' => Time.now.to_s
+      }
+
+      @db.put_item({ table_name: @config[:table_names][:ping], item: item })
+      item
     end
 
     def insert_job(job_name, input)
