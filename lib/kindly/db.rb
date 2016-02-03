@@ -70,6 +70,8 @@ module Kindly
       if job.fields.has_key?('InputDataId')
         input = fetch_job_data(job.fields['InputDataId'])
         job.input = input
+      elsif job.fields.has_key?('Input')
+        job.input = job.fields['Input']
       end
       job
     end
