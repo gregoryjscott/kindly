@@ -1,4 +1,5 @@
 require 'kindly'
+require 'time'
 
 module Kindly
   class Runner
@@ -25,7 +26,7 @@ module Kindly
 
     def run_job(job)
       job.fields['RanBy'] = @db.user.user_name
-      job.fields['StartedAt'] = Time.now.to_s
+      job.fields['StartedAt'] = Time.now.utc.iso8601
       @db.update_job_status(job, :running)
 
       failed = false
@@ -37,7 +38,7 @@ module Kindly
           failed = true
           puts $!, $@
         end
-        job.fields['FinishedAt'] = Time.now.to_s
+        job.fields['FinishedAt'] = Time.now.utc.iso8601
         puts "#{job.fields['JobId']} finished at #{job.fields['FinishedAt']}."
 
         if job.respond_to? :output

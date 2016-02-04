@@ -1,5 +1,6 @@
 require 'kindly'
 require 'aws-sdk'
+require 'time'
 
 module Kindly
   class DB
@@ -28,7 +29,7 @@ module Kindly
       item = {
         'PingId' => SecureRandom.uuid,
         'PingBy' => user.user_name,
-        'PingAt' => Time.now.to_s
+        'PingAt' => Time.now.utc.iso8601
       }
 
       @db.put_item({ table_name: @config[:table_names][:ping], item: item })
@@ -39,7 +40,7 @@ module Kindly
       item = {
         'JobId' => SecureRandom.uuid,
         'JobName' => job_name,
-        'RequestedAt' => Time.now.to_s,
+        'RequestedAt' => Time.now.utc.iso8601,
         'RequestedBy' => user.user_name
       }
 
@@ -56,7 +57,7 @@ module Kindly
       item = {
         'JobDataId' => SecureRandom.uuid,
         'Data' => data,
-        'CreatedAt' => Time.now.to_s
+        'CreatedAt' => Time.now.utc.iso8601
       }
       @db.put_item({ table_name: 'job-data', item: item })
       item
@@ -130,7 +131,7 @@ module Kindly
     end
 
     def insert_job_status(job, job_status)
-      job.fields['CreatedAt'] = Time.now.to_s
+      job.fields['CreatedAt'] = Time.now.utc.iso8601
       @db.put_item({
         table_name: @config[:table_names][job_status],
         item: job.fields
