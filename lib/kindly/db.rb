@@ -92,10 +92,10 @@ module Kindly
     private
 
     def fetch_job_fields(job_id)
-      response = @db.scan({
+      response = @db.query({
         table_name: @config[:table_names][:pending],
         select: 'ALL_ATTRIBUTES',
-        filter_expression: "JobId = :job_id",
+        key_condition_expression: "JobId = :job_id",
         expression_attribute_values: { ":job_id": job_id }
       })
 
@@ -105,10 +105,10 @@ module Kindly
     end
 
     def fetch_job_data(job_data_id)
-      response = @db.scan({
+      response = @db.query({
         table_name: @config[:table_names][:data],
         select: 'ALL_ATTRIBUTES',
-        filter_expression: "JobDataId = :job_data_id",
+        key_condition_expression: "JobDataId = :job_data_id",
         expression_attribute_values: { ":job_data_id": job_data_id }
       })
 
