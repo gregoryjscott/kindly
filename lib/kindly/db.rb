@@ -1,6 +1,7 @@
 require 'kindly'
 require 'aws-sdk'
 require 'time'
+require 'securerandom'
 
 module Kindly
   class DB
